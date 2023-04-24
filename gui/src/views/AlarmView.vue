@@ -15,6 +15,8 @@
       <input type="time" v-model="newAlarm">
       <button class="button" v-on:click="createAlarm"> Create </button>
     </div>
+    <br><br>
+    <p> {{alarms}} </p>
   </div>
 </template>
 
@@ -31,6 +33,7 @@
         newAlarm: "",
         dTimer: "",
         isActive: false,
+        alarms: []
       };
     },
     methods: {
@@ -69,10 +72,22 @@
             // thisView.startAlarm();
         }, 1000);
         setInterval(thisView.startAlarm, 20000);
+      },
+      getAlarms: function () {
+        axios.get(path)
+        .then((res) => {
+          this.alarms = res.data.alarms;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       }
     },
     mounted: function() {
-      this.checkTime()
+      this.checkTime();
+    },
+    created: function () {
+      this.getAlarms();
     }
   }
 </script>
