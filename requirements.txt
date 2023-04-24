@@ -1,0 +1,7 @@
+opencv-python
+tensorflow
+keras
+pygame
+pyttsx3
+Flask==2.2.3
+Flask-Cors==3.0.10
