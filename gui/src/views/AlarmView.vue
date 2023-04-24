@@ -65,11 +65,6 @@
         setInterval(function () {
             let clock = new Date();
             thisView.dTimer = clock.toLocaleTimeString();
-            // if (!thisView.isActive && clock.getHours() == 21 && clock.getMinutes() == 27){
-            //   thisView.startAlarm();
-            //   thisView.isActive = true;
-            // }
-            // thisView.startAlarm();
         }, 1000);
         setInterval(thisView.startAlarm, 20000);
       },
