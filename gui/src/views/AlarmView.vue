@@ -1,13 +1,11 @@
 <template>
-  <div>
+  <div class="container">
+    <br><br><br>
     <h1> Time: {{dTimer}}</h1>
     <br><br>
-    <div v-if="isRinging">
+    <div>
       <button class="button button3" v-on:click="silenceAlarm">Off</button>
       <button class="button button4" v-on:click="snoozeAlarm">Snooze</button>
-    </div>
-    <div v-else>
-        {{userAction}}
     </div>
     <br><br>
     <div>
@@ -15,6 +13,8 @@
       <input type="time" v-model="newAlarm">
       <button class="button" v-on:click="createAlarm"> Create </button>
     </div>
+    <br><br>
+    <p> {{alarms}} </p>
   </div>
 </template>
 
@@ -26,34 +26,29 @@
     props: [],
     data(){
       return {
-        isRinging: true,
-        userAction: "None",
         newAlarm: "",
         dTimer: "",
-        isActive: false,
+        alarms: []
       };
     },
     methods: {
       startAlarm: function () {
         axios.post(path, {"action": "start"});
-        this.userAction = "Started Alarm";
       },
       silenceAlarm: function () {
         axios.post(path, {"action": "silence"});
-        this.userAction = "Silenced Alarm";
-        this.isRinging = false;
       },
       snoozeAlarm: function () {
-        axios.post(path, {"action": "snooze"});
-        this.userAction = "Snoozed Alarm";
-        this.isRinging = false;
+        axios.post(path,
+            {"action": "snooze"}
+        ).then(() => this.getAlarms());
       },
       createAlarm: function () {
         if (this.newAlarm) {
           axios.post(path, {
             "action": "create",
             "time": this.newAlarm
-          });
+          }).then(() => this.getAlarms());
           this.newAlarm = ""
         }
       },
@@ -62,22 +57,34 @@
         setInterval(function () {
             let clock = new Date();
             thisView.dTimer = clock.toLocaleTimeString();
-            // if (!thisView.isActive && clock.getHours() == 21 && clock.getMinutes() == 27){
-            //   thisView.startAlarm();
-            //   thisView.isActive = true;
-            // }
-            // thisView.startAlarm();
         }, 1000);
         setInterval(thisView.startAlarm, 20000);
+      },
+      getAlarms: function () {
+        axios.get(path)
+        .then((res) => {
+          this.alarms = res.data.alarms;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       }
     },
     mounted: function() {
-      this.checkTime()
+      this.checkTime();
+    },
+    created: function () {
+      this.getAlarms();
     }
   }
 </script>
 
 <style>
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .button {
   background-color: #4CAF50; /* Green */
   border: none;
