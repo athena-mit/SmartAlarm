@@ -2,17 +2,11 @@ import cv2
 import os
 from keras.models import load_model
 import numpy as np
-from pygame import mixer
-
-mixer.init()
-alarm = mixer.music
-alarm.load('mixkit-sleepy-cat-135.mp3')
 
 cap = cv2.VideoCapture(0)
 
 
-def trigger_alarm():
-    alarm.play(loops=-1)
+def trigger_alarm(event):
     face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml')
     leye = cv2.CascadeClassifier('haar cascade files\haarcascade_lefteye_2splits.xml')
     reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xml')
@@ -30,7 +24,7 @@ def trigger_alarm():
 
     global cap
     cap = cv2.VideoCapture(0)
-    while True:
+    while not event.is_set():
         ret, frame = cap.read()
         height, width = frame.shape[:2]
 
@@ -98,14 +92,7 @@ def trigger_alarm():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             # silence_alarm()
             break
-    alarm.stop()
-    cap.release()
-    cv2.destroyAllWindows()
-    return
-
-
-def silence_alarm():
-    alarm.stop()
+    event.set()
     cap.release()
     cv2.destroyAllWindows()
     return
