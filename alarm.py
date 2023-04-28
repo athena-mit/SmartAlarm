@@ -2,7 +2,7 @@ import time
 import alertness_detection as ad
 import voice_commands as vc
 from pygame import mixer
-from multiprocessing import Process, Event
+from threading import Thread, Event
 
 mixer.init()
 alarm = mixer.music
@@ -48,24 +48,27 @@ def do_trigger_alarm():
 #     event.is_set()
 #     return
 
-def try_ring():
-    global alarm, event
-    if do_trigger_alarm() or True:
-        event.clear()
-        camera_detection = Process(target=ad.trigger_alarm, args=(event,))
-        vocal_command = Process(target=vc.get_voice_command, args=(event,))
-        alarm.play(loops=-1)
-        camera_detection.start()
-        vocal_command.start()
-        camera_detection.join()
-        vocal_command.join()
-        silence()
+def silence():
+    alarm.stop()
+    # event.set()
     return
 
 
-def silence():
-    alarm.stop()
-    event.set()
+def try_ring():
+    global alarm, event
+    if do_trigger_alarm():
+        event.clear()
+        camera_detection = Thread(target=ad.trigger_alarm, args=(event,))
+        vocal_command = Thread(target=vc.get_voice_command, args=(event,))
+        alarm.play(loops=-1)
+        camera_detection.start()
+        vocal_command.start()
+        event.wait()
+        alarm.stop()
+        print("done waiting")
+        camera_detection.join()
+        vocal_command.join()
+        print("silenced")
     return
 
 
