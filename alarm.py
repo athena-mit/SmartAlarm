@@ -50,7 +50,7 @@ def do_trigger_alarm():
 
 def silence():
     alarm.stop()
-    # event.set()
+    event.set()
     return
 
 
@@ -65,10 +65,8 @@ def try_ring():
         vocal_command.start()
         event.wait()
         alarm.stop()
-        print("done waiting")
         camera_detection.join()
         vocal_command.join()
-        print("silenced")
     return
 
 
