@@ -69,9 +69,10 @@ def trigger_alarm(event):
         if (rpred[0] == 0 and lpred[0] == 0):
             score = score - 1
             cv2.putText(frame, "Closed", (10, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-        else:
+        elif (rpred[0] == 1 and lpred[0] == 1):
             score = score + 1
             cv2.putText(frame, "Open", (10, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+        # if eyes haven't been detected or only one is open, score stays the same
 
         if (score > 15):  # person is awake
             break
@@ -93,3 +94,4 @@ def trigger_alarm(event):
     cap.release()
     cv2.destroyAllWindows()
     return
+
