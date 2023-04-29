@@ -3,8 +3,6 @@ import os
 from keras.models import load_model
 import numpy as np
 
-cap = cv2.VideoCapture(0)
-
 
 def trigger_alarm(event):
     face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml')
@@ -22,8 +20,7 @@ def trigger_alarm(event):
     rpred = [99]
     lpred = [99]
 
-    global cap
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     while not event.is_set():
         ret, frame = cap.read()
         height, width = frame.shape[:2]
