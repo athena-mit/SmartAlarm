@@ -14,15 +14,17 @@
       <button class="button" v-on:click="createAlarm"> Create </button>
     </div>
     <br><br>
-    <p> {{alarms}} </p>
+    <AlarmList @refresh-alarms="getAlarms" :alarms="alarms"/>
   </div>
 </template>
 
 <script>
   import axios from "axios";
+  import AlarmList from "@/components/AlarmList.vue";
   const path = 'http://localhost:5001/alarm'
   export default {
-    name: "alarm",
+    name: "alarmView",
+      components: {AlarmList},
     props: [],
     data(){
       return {
