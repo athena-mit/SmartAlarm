@@ -10,7 +10,7 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-@app.route('/alarm', methods=['GET', 'POST'])
+@app.route('/alarm', methods=['GET', 'DELETE', 'POST'])
 def play_alarm():
     response_object = {'status': 'success'}
     if request.method == "GET":
@@ -27,6 +27,14 @@ def play_alarm():
             new_alarm = post_data.get("time").split(":")
             alarm.create(new_alarm)
         response_object["action"] = post_data.get("action")
+    return jsonify(response_object)
+
+
+@app.route('/alarm/<alarm_id>', methods=['DELETE'])
+def single_alarm(alarm_id):
+    response_object = {'status': 'success'}
+    if request.method == "DELETE":
+        alarm.delete(alarm_id)
     return jsonify(response_object)
 
 
