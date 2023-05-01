@@ -60,7 +60,7 @@
             let clock = new Date();
             thisView.dTimer = clock.toLocaleTimeString();
         }, 1000);
-        setInterval(thisView.startAlarm, 20000);
+        setInterval(thisView.startAlarm, 10000);
       },
       getAlarms: function () {
         axios.get(path)

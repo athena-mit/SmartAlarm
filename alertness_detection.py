@@ -2,17 +2,11 @@ import cv2
 import os
 from keras.models import load_model
 import numpy as np
-from pygame import mixer
 
-mixer.init()
-alarm = mixer.music
-alarm.load('mixkit-sleepy-cat-135.mp3')
-
-cap = cv2.VideoCapture(0)
+CAM = 0  # 0 for laptop cam, 1 for usb cam
 
 
-def trigger_alarm():
-    alarm.play(loops=-1)
+def trigger_alarm(event):
     face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml')
     leye = cv2.CascadeClassifier('haar cascade files\haarcascade_lefteye_2splits.xml')
     reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xml')
@@ -28,9 +22,8 @@ def trigger_alarm():
     rpred = [99]
     lpred = [99]
 
-    global cap
-    cap = cv2.VideoCapture(0)
-    while True:
+    cap = cv2.VideoCapture(CAM)
+    while not event.is_set():
         ret, frame = cap.read()
         height, width = frame.shape[:2]
 
@@ -78,9 +71,10 @@ def trigger_alarm():
         if (rpred[0] == 0 and lpred[0] == 0):
             score = score - 1
             cv2.putText(frame, "Closed", (10, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-        else:
+        elif (rpred[0] == 1 and lpred[0] == 1):
             score = score + 1
             cv2.putText(frame, "Open", (10, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+        # if eyes haven't been detected or only one is open, score stays the same
 
         if (score > 15):  # person is awake
             break
@@ -98,14 +92,7 @@ def trigger_alarm():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             # silence_alarm()
             break
-    alarm.stop()
-    cap.release()
-    cv2.destroyAllWindows()
-    return
-
-
-def silence_alarm():
-    alarm.stop()
+    event.set()
     cap.release()
     cv2.destroyAllWindows()
     return
