@@ -14,7 +14,7 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def play_alarm():
     response_object = {'status': 'success'}
     if request.method == "GET":
-        response_object["alarms"] = alarm.get_times()
+        response_object["alarms"] = alarm.get_alarms()
     elif request.method == "POST":
         post_data = request.get_json()
         if post_data.get("action") == "start":

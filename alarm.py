@@ -19,8 +19,8 @@ def get_alarms():
 def create(new_alarm):
     ALARMS.append({
         "id": uuid.uuid4().hex,
-        "hour": new_alarm[0],
-        "min": new_alarm[1],
+        "hour": int(new_alarm[0]),
+        "min": int(new_alarm[1]),
         "status": "active"
     })
     return
@@ -48,7 +48,7 @@ def try_ring():
     ring_alarm = False
     for a in ALARMS:
         if a["hour"] == curr_time.tm_hour \
-                and a["min"] == curr_time.tm_hour \
+                and a["min"] == curr_time.tm_min \
                 and a["status"] == "active":
             a["status"] = "ringing"
             ring_alarm = True

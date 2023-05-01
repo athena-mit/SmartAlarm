@@ -3,6 +3,8 @@ import os
 from keras.models import load_model
 import numpy as np
 
+CAM = 0  # 0 for laptop cam, 1 for usb cam
+
 
 def trigger_alarm(event):
     face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml')
@@ -20,7 +22,7 @@ def trigger_alarm(event):
     rpred = [99]
     lpred = [99]
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(CAM)
     while not event.is_set():
         ret, frame = cap.read()
         height, width = frame.shape[:2]
@@ -94,4 +96,3 @@ def trigger_alarm(event):
     cap.release()
     cv2.destroyAllWindows()
     return
-
