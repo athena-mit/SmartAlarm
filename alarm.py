@@ -4,6 +4,12 @@ import voice_commands as vc
 from pygame import mixer
 from threading import Thread, Event
 import uuid
+from enum import Enum
+from middleware import increase_time_by, convert_str_to_t_tup
+from events import get_soonest_event, Importance
+
+Status = Enum('Status', ['ACTIVE', 'RINGING', 'DISABLED'])
+Mode = Enum('Mode', ['BASIC', 'QUE_SERA_SERA', 'AT_ALL_COSTS'])
 
 event = Event()
 ALARMS = []
@@ -13,15 +19,16 @@ alarm.load('mixkit-sleepy-cat-135.mp3')
 
 
 def get_alarms():
-    return ALARMS
+    return ALARMS.copy()
 
 
-def create(new_alarm):
+def create(new_alarm, mode):
     ALARMS.append({
         "id": uuid.uuid4().hex,
         "hour": int(new_alarm[0]),
         "min": int(new_alarm[1]),
-        "status": "active"
+        "status": Status.ACTIVE.name,
+        "mode": mode
     })
     return
 
@@ -38,8 +45,8 @@ def silence():
     alarm.stop()
     event.set()
     for a in ALARMS:
-        if a["status"] == "ringing":
-            a["status"] = "disabled"
+        if a["status"] == Status.RINGING.name:
+            a["status"] = Status.DISABLED.name
     return
 
 
@@ -49,8 +56,8 @@ def try_ring():
     for a in ALARMS:
         if a["hour"] == curr_time.tm_hour \
                 and a["min"] == curr_time.tm_min \
-                and a["status"] == "active":
-            a["status"] = "ringing"
+                and a["status"] == Status.ACTIVE.name:
+            a["status"] = Status.RINGING.name
             ring_alarm = True
     if ring_alarm:
         event.clear()
@@ -69,14 +76,20 @@ def try_ring():
 def snooze():
     silence()
     curr_time = time.localtime()
-    minute = curr_time.tm_min + 5
-    hour = curr_time.tm_hour
-    if minute >= 60:
-        hour += 1
-        minute = minute % 60
-        if hour >= 24:
-            hour = hour % 24
-    create((hour, minute))
+    create(increase_time_by((curr_time.tm_hour, curr_time.tm_min)))
+    return
+
+
+def schedule_next_alarm():
+    soonest_event = get_soonest_event()
+    if soonest_event:
+        event_time = convert_str_to_t_tup(soonest_event)
+        if soonest_event['importance'] == Importance.HIGH.name:
+            create(event_time, Mode.AT_ALL_COSTS.name)
+        elif soonest_event['importance'] == Importance.MED.name:
+            create(event_time, Mode.BASIC.name)
+        else:
+            create(event_time, Mode.QUE_SERA_SERA)
     return
 
 
