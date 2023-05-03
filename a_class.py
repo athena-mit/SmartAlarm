@@ -4,7 +4,7 @@ from utilities import *
 
 
 class AlarmSchedule:
-    __records = {}
+    __records = []
     __severest_ringing_alarm = NO_ALARM
 
     def add(self, t: datetime.datetime, mode: int):
