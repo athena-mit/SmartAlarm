@@ -1,7 +1,7 @@
 from enum import Enum
 import uuid
 import datetime
-from middleware import is_after, convert_str_to_t_tup
+from utilities import is_after, convert_str_to_t_tup
 
 Importance = Enum('Importance', ['HIGH', 'MEDIUM', 'LOW', 'ZERO'])
 
@@ -45,7 +45,7 @@ def create(date, name, importance, t_start, t_end):
     if date_key in EVENTS.keys():
         EVENTS[date_key].append(event_data)
     else:
-        EVENTS[date_key] = event_data
+        EVENTS[date_key] = [event_data]
     return
 
 
