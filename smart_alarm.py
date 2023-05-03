@@ -1,6 +1,6 @@
 import datetime
-from a_class import AlarmSchedule
-from e_class import EventCalendar
+from alarm_schedule import AlarmSchedule
+from event_calendar import EventCalendar
 from utilities import *
 import alertness_detection as ad
 import voice_commands as vc

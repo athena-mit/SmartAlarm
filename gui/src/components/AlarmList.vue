@@ -1,7 +1,7 @@
 <template>
   <div class="alarmList">
     <div class="alarm" v-for="a in alarms">
-        <span> {{ a.hour }}:{{ a.min }} </span>
+        <span> {{ a.time }} </span>
       <span class="close" v-on:click="deleteAlarm(a.id)">x</span>
     </div>
   </div>
