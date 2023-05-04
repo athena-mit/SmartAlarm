@@ -20,14 +20,16 @@ class SmartAlarm:
         return self.alarms.get_all()
 
     def add_alarm(self, time_str, mode_str='basic'):
-        time_info = time_str.split(":")
-        hour, minute = int(time_info[0]), int(time_info[1])
         current_time = datetime.datetime.now()
-        current_time.replace(second=0)
-        if hour < current_time.hour or (hour == current_time.hour and minute < current_time.minute):
-            tomorrow = current_time + datetime.timedelta(days=1)
+        print("time info:" + str(time_str.split(":")))
+        time_info = time_str.split(":")
+        alarm_time = current_time.replace(hour=int(time_info[0]), minute=int(time_info[1]), second=0)
+        print("alarm time =" + str(alarm_time))
+        if alarm_time < current_time:
+            tomorrow = alarm_time + datetime.timedelta(hours=24)
+            print("tomorrow =" + str(tomorrow))
             return self.alarms.add(tomorrow, MODES[mode_str])
-        return self.alarms.add(current_time, MODES[mode_str])
+        return self.alarms.add(alarm_time, MODES[mode_str])
 
     def delete_alarm(self, alarm_id):
         return self.alarms.remove(alarm_id)

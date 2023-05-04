@@ -1,7 +1,7 @@
 <template>
   <div class="alarmList">
     <div class="alarm" v-for="a in alarms">
-        <span> {{ a.time }} </span>
+        <span> {{ formatTime(a.time) }} </span>
       <span class="close" v-on:click="deleteAlarm(a.id)">x</span>
     </div>
   </div>
@@ -13,6 +13,10 @@
     name: "alarmList",
     props: ["alarms"],
     methods: {
+      formatTime: function(time_string){
+        const alarmTime = new Date(time_string + "-400")
+        return alarmTime.getHours() + ":" + alarmTime.getMinutes()
+      },
       deleteAlarm: function (alarm_id) {
         const path = `http://localhost:5001/alarm/${alarm_id}`
         axios.delete(path)

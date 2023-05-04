@@ -50,8 +50,11 @@
           axios.post(path, {
             "action": "create",
             "time": this.newAlarm
-          }).then(() => this.getAlarms());
-          this.newAlarm = ""
+          }).then(() => {
+              this.getAlarms()
+              this.newAlarm = ""
+              }
+          );
         }
       },
       checkTime: function () {
