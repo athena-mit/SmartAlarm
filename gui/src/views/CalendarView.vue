@@ -151,6 +151,7 @@
 <style>
 .calendarView{
   display: flex;
+  justify-content: space-around;
 }
 .week{
   display: flex;
