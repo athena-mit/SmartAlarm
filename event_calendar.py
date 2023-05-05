@@ -8,7 +8,6 @@ class EventCalendar:
     __records = {}
 
     def add(self, date, name, importance, t_start, t_end, t_warn):
-        date_key = convert_date_str_to_datettime(date)
         event = {
             "id": uuid.uuid4().hex,
             'name': name,
@@ -17,10 +16,10 @@ class EventCalendar:
             'end_time': t_end,
             'warn_time': t_warn
         }
-        if date_key in self.__records.keys():
-            self.__records[date_key].append(event)
+        if date in self.__records.keys():
+            self.__records[date].append(event)
         else:
-            self.__records[date_key] = [event]
+            self.__records[date] = [event]
         return
 
     def remove(self, date, event_id):
@@ -33,6 +32,11 @@ class EventCalendar:
 
     def get_all(self):
         return self.__records.copy()
+
+    def get_day(self, date):
+        if date not in self.__records.keys():
+            return False
+        return self.__records[date].copy()
 
     def get_range(self, start_date: str, end_date: str) -> dict:
         mini_calendar = []

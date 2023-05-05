@@ -19,6 +19,11 @@ class SmartAlarm:
     def get_alarms(self):
         return self.alarms.get_all()
 
+    def get_events(self, date):
+        date_key = datetime.datetime.fromisoformat(date)
+        date_key = date_key.replace(hour=0, minute=0, second=0)
+        return self.events.get_day(date_key)
+
     def add_alarm(self, time_str, mode_str='basic'):
         current_time = datetime.datetime.now()
         print("time info:" + str(time_str.split(":")))
@@ -30,6 +35,18 @@ class SmartAlarm:
             print("tomorrow =" + str(tomorrow))
             return self.alarms.add(tomorrow, MODES[mode_str])
         return self.alarms.add(alarm_time, MODES[mode_str])
+
+    def add_event(self, name, importance, s_time, e_time, w_time):
+        date = datetime.datetime.fromisoformat(s_time)
+        date = date.replace(hour=0, minute=0, second=0)
+        return self.events.add(
+            date,
+            name,
+            importance,
+            datetime.datetime.fromisoformat(s_time),
+            datetime.datetime.fromisoformat(e_time),
+            datetime.datetime.fromisoformat(w_time)
+        )
 
     def delete_alarm(self, alarm_id):
         return self.alarms.remove(alarm_id)
@@ -76,5 +93,3 @@ class SmartAlarm:
         self.__schedule_next_alarm(int(minutes))
         self.silence()
         return True
-
-

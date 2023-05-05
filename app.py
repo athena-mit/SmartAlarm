@@ -1,3 +1,6 @@
+import datetime
+import json
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from smart_alarm import SmartAlarm
@@ -36,6 +39,28 @@ def single_alarm(alarm_id):
     response_object = {'status': 'success'}
     if request.method == "DELETE":
         MANAGER.delete_alarm(alarm_id)
+    return jsonify(response_object)
+
+
+@app.route('/event/<date>', methods=['GET'])
+def get_events(date):
+    return jsonify({'status': 'success', "events": MANAGER.get_events(date)})
+
+
+@app.route('/event', methods=['POST'])
+def handle_events():
+    response_object = {'status': 'success'}
+    if request.method == "POST":
+        post_data = request.get_json()
+        if post_data.get("action") == "create":
+            MANAGER.add_event(
+                post_data.get("name"),
+                post_data.get("importance"),
+                post_data.get("start_time"),
+                post_data.get("end_time"),
+                post_data.get("warn_time")
+            )
+        response_object["action"] = post_data.get("action")
     return jsonify(response_object)
 
 
