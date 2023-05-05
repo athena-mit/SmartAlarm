@@ -4,10 +4,9 @@
       <h1>{{currMonth}}</h1>
       <div class="week" v-for="w in numWeeks">
         <div class="day" v-for="d in weekDates(w)">
-          <div v-if="d.getMonth() == firstDay.getMonth()" class="daySchedule">
+          <div v-if="d.getMonth() == firstDay.getMonth()" class="daySchedule" v-on:click="getEvents(d)">
             <h2>{{d.getMonth() + 1}}/{{d.getDate()}}</h2>
             <i>{{getNumEvents(d)}}</i>
-  <!--          <div class="hourBlock" v-for="index in 24">{{index}}</div>-->
           </div>
           <div v-else class="outsideMonth"></div>
         </div>
@@ -35,30 +34,33 @@
       <button class="button" v-on:click="createEvent"> Create </button>
       <br><br>
     </div>
+    <div v-if="showPopUp">
+      <DayEvents :events="eventSched" @close-window="showPopUp=false"/>
+    </div>
   </div>
 </template>
 
 <script>
   import axios from "axios";
   const path = 'http://localhost:5001/event'
+  import DayEvents from "@/components/DayEvents.vue";
   export default {
     name: "calendarView",
+      components: {DayEvents},
     data(){
       return {
         events: [],
         currMonth: 'May',
         firstDay: new Date('2023-05-01T00:00:00'),
-        dayEvents: {
-          start_time: new Date('2023-05-02T03:00:00'),
-          end_time: new Date('2023-05-02T04:00:00')
-        },
+        showPopUp: false,
         newEvent: {
             name: "",
             importance: "low",
             start_time: "",
             end_time: "",
             warn_time: "",
-        }
+        },
+        eventSched: []
       };
     },
     computed: {
@@ -72,7 +74,7 @@
           nextWeek.setDate(nextWeek.getDate() + 7)
         }
         return numWeeks;
-      },
+      }
     },
     methods: {
       weekDates: function(weekNum) {
@@ -95,10 +97,11 @@
           console.error(error);
         });
       },
-      getEvents: function (){
-        axios.get(path + `/2023-05-05`)
+      getEvents: function (day){
+        axios.get(path + `/${day.toISOString().substring(0, 10)}`)
         .then((res) => {
-          this.events = res.data.events;
+          this.eventSched = res.data.events;
+          this.showPopUp = true;
         })
         .catch((error) => {
           console.error(error);
@@ -154,7 +157,7 @@
   align-items: center;
   flex-grow: 1;
 }
-.daySchedule, .outsideMonth{
+.daySchedule, .outsideMonth {
   background-color: lightgray;
   flex-grow: 1;
   width: 100px;
@@ -163,7 +166,7 @@
 }
 
 .outsideMonth {
-    background-color: #e7e7e7;
+  background-color: #e7e7e7;
 }
 
 .addEvent {
