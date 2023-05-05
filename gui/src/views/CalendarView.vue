@@ -6,6 +6,7 @@
         <div class="day" v-for="d in weekDates(w)">
           <div class="daySchedule">
             <h2>{{d.getMonth() + 1}}/{{d.getDate()}}</h2>
+            <p>{{getNumEvents(d)}}</p>
   <!--          <div class="hourBlock" v-for="index in 24">{{index}}</div>-->
           </div>
         </div>
@@ -86,6 +87,15 @@
         }
         return week
       },
+      getCalendarSummary: function (day){
+        axios.get(path + `/summary/${day.toISOString().substring(0, 10)}`)
+        .then((res) => {
+          this.events = res.data.events;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      },
       getEvents: function (){
         axios.get(path + `/2023-05-05`)
         .then((res) => {
@@ -94,6 +104,18 @@
         .catch((error) => {
           console.error(error);
         });
+      },
+      getNumEvents: function (day){
+        if (this.events && day.getMonth() == this.firstDay.getMonth()) {
+          let numEvents = this.events[day.getDate() - 1];
+          if (numEvents == 1){
+            return numEvents + " event"
+          } else if (numEvents > 0){
+            return numEvents + " events"
+          }
+        }
+        return
+
       },
       createEvent: function () {
         if (this.newEvent.name) {
@@ -105,7 +127,7 @@
             'end_time': this.newEvent.end_time,
             'warn_time': this.newEvent.warn_time
           }).then(() => {
-              this.getEvents()
+              this.events = this.getCalendarSummary(this.firstDay);
               // this.newEvent= {
               //   name: "",
               //   importance: "",
@@ -119,7 +141,7 @@
       },
     },
     created: function () {
-      this.getEvents();
+      this.getCalendarSummary(this.firstDay);
     }
   }
 </script>

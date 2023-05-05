@@ -47,7 +47,12 @@ def get_events(date):
     return jsonify({'status': 'success', "events": MANAGER.get_events(date)})
 
 
-@app.route('/event', methods=['POST'])
+@app.route('/event/summary/<date>', methods=['GET'])
+def get_summary(date):
+    return jsonify({'status': 'success', "events": MANAGER.get_event_summary(date)})
+
+
+@app.route('/event', methods=['GET', 'POST'])
 def handle_events():
     response_object = {'status': 'success'}
     if request.method == "POST":

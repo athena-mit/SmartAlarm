@@ -2,6 +2,7 @@ from enum import Enum
 import uuid
 import datetime
 from utilities import *
+import calendar
 
 
 class EventCalendar:
@@ -37,6 +38,17 @@ class EventCalendar:
         if date not in self.__records.keys():
             return False
         return self.__records[date].copy()
+
+    def get_calendar_summary(self, year, month):
+        summary = []
+        for i in range(1, calendar.monthrange(year, month)[1] + 1):
+            date = datetime.datetime(year=year, month=month, day=i, hour=0, minute=0, second=0)
+            if date in self.__records.keys():
+                summary.append(len(self.__records[date]))
+            else:
+                summary.append(0)
+        return summary
+
 
     def get_range(self, start_date: str, end_date: str) -> dict:
         mini_calendar = []

@@ -24,6 +24,10 @@ class SmartAlarm:
         date_key = date_key.replace(hour=0, minute=0, second=0)
         return self.events.get_day(date_key)
 
+    def get_event_summary(self, date):
+        date = datetime.datetime.fromisoformat(date)
+        return self.events.get_calendar_summary(date.year, date.month)
+
     def add_alarm(self, time_str, mode_str='basic'):
         current_time = datetime.datetime.now()
         print("time info:" + str(time_str.split(":")))
