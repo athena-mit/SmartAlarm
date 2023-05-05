@@ -4,11 +4,12 @@
       <h1>{{currMonth}}</h1>
       <div class="week" v-for="w in numWeeks">
         <div class="day" v-for="d in weekDates(w)">
-          <div class="daySchedule">
+          <div v-if="d.getMonth() == firstDay.getMonth()" class="daySchedule">
             <h2>{{d.getMonth() + 1}}/{{d.getDate()}}</h2>
-            <p>{{getNumEvents(d)}}</p>
+            <i>{{getNumEvents(d)}}</i>
   <!--          <div class="hourBlock" v-for="index in 24">{{index}}</div>-->
           </div>
+          <div v-else class="outsideMonth"></div>
         </div>
       </div>
     </div>
@@ -33,9 +34,6 @@
       <br><br>
       <button class="button" v-on:click="createEvent"> Create </button>
       <br><br>
-      Events:
-      <br>
-      {{events}}
     </div>
   </div>
 </template>
@@ -49,6 +47,7 @@
       return {
         events: [],
         currMonth: 'May',
+        firstDay: new Date('2023-05-01T00:00:00'),
         dayEvents: {
           start_time: new Date('2023-05-02T03:00:00'),
           end_time: new Date('2023-05-02T04:00:00')
@@ -63,15 +62,15 @@
       };
     },
     computed: {
-      firstDay: function() {return new Date(this.currMonth + ' 01, 2023');},
+      // firstDay: function() {return new Date(this.currMonth + ' 01, 2023');},
       numWeeks: function() {
-        let numWeeks = 0;
-        let nextWeek = new Date(this.firstDay)
+        let numWeeks = 1;
+        let nextWeek = new Date(this.firstDay);
+        nextWeek.setDate(this.firstDay.getDate() + 7 + (0 - this.firstDay.getDay()));
         while (nextWeek.getMonth() == this.firstDay.getMonth()){
           numWeeks++;
           nextWeek.setDate(nextWeek.getDate() + 7)
         }
-        if (nextWeek.getDay() != 0){numWeeks++;}
         return numWeeks;
       },
     },
@@ -155,13 +154,18 @@
   align-items: center;
   flex-grow: 1;
 }
-.daySchedule{
+.daySchedule, .outsideMonth{
   background-color: lightgray;
   flex-grow: 1;
   width: 100px;
   height: 100px;
   margin: 5px;
 }
+
+.outsideMonth {
+    background-color: #e7e7e7;
+}
+
 .addEvent {
   display: flex;
   flex-direction: column;
