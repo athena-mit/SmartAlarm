@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:style="{backgroundColor:lighting[lightSetting]}">
+  <div v-bind:style="{backgroundColor:roomSettings.brightness}">
     <img src="../assets/bed.png">
     <button v-on:click="toggleLighting">toggle</button>
   </div>
@@ -8,6 +8,7 @@
 <script>
   export default {
     name: "roomView",
+    props: ['roomSettings'],
     data() {
       return {
         lighting: [

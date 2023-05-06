@@ -15,6 +15,7 @@
     </div>
     <br><br>
     <AlarmList @refresh-alarms="getAlarms" :alarms="alarms"/>
+    <p>Room settings: {{roomSettings}}</p>
   </div>
 </template>
 
@@ -25,7 +26,7 @@
   export default {
     name: "alarmView",
       components: {AlarmList},
-    props: [],
+    props: ['roomSettings'],
     data(){
       return {
         newAlarm: "",
@@ -69,6 +70,7 @@
         axios.get(path)
         .then((res) => {
           this.alarms = res.data.alarms;
+          this.roomSettings.brightness = res.data.brightness;
         })
         .catch((error) => {
           console.error(error);

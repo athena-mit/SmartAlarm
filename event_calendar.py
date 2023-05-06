@@ -86,4 +86,6 @@ class EventCalendar:
                     if not soonest_event or is_after(soonest_time, event_time):
                         soonest_time = event_time
                         soonest_event = e
+            if not soonest_event:
+                return False
         return soonest_event.copy()

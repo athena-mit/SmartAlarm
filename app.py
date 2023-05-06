@@ -20,6 +20,7 @@ def play_alarm():
     response_object = {'status': 'success'}
     if request.method == "GET":
         response_object["alarms"] = MANAGER.get_alarms()
+        response_object['brightness'] = MANAGER.get_room_brightness();
     elif request.method == "POST":
         post_data = request.get_json()
         if post_data.get("action") == "start":
@@ -67,6 +68,11 @@ def handle_events():
             )
         response_object["action"] = post_data.get("action")
     return jsonify(response_object)
+
+
+@app.route('/room', methods=['GET'])
+def handle_room():
+    return jsonify({'status': 'success', "brightness": MANAGER.get_room_brightness()})
 
 
 if __name__ == '__main__':
