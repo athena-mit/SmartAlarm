@@ -20,6 +20,9 @@ MODE_DEGREE = {
 # Event importance to alarm mode mapping
 EVENT_MODE = {'high': AT_ALL_COSTS, 'medium': PASSIVE_AGGRESSIVE, 'low': BASIC, 'zero': QUE_SERA_SERA}
 
+#voice_commands
+user_command = None
+
 
 def convert_date_str_to_datettime(date):
     date_info = date.split(":")

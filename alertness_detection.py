@@ -3,7 +3,7 @@ import os
 from keras.models import load_model
 import numpy as np
 
-CAM = 0  # 0 for laptop cam, 1 for usb cam
+CAM = 0  # goes to default webcam
 
 
 def trigger_alarm(event):
@@ -96,3 +96,5 @@ def trigger_alarm(event):
     cap.release()
     cv2.destroyAllWindows()
     return
+
+

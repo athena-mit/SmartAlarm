@@ -33,7 +33,6 @@
   export default {
     name: "alarmView",
       components: {AlarmList},
-    props: ['roomSettings'],
     data(){
       return {
         newAlarm: {
@@ -83,7 +82,6 @@
         axios.get(path)
         .then((res) => {
           this.alarms = res.data.alarms;
-          this.roomSettings.brightness = res.data.brightness;
         })
         .catch((error) => {
           console.error(error);

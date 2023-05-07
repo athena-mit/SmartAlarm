@@ -61,23 +61,33 @@ class SmartAlarm:
         self.ringtone.stop()
         self.ring_event.set()
         self.alarms.silence()
+        self.room.turn_off_lights()
         return
 
     def try_ring(self):
         if self.alarms.is_time_to_trigger():
             self.ring_event.clear()
             camera_detection = Thread(target=ad.trigger_alarm, args=(self.ring_event,))
-            vocal_command = Thread(target=vc.get_voice_command, args=(self.ring_event,))
-            self.ringtone.play(loops=-1)
+            vocal_command = vc.VoiceCommands(
+                self.ring_event,
+                self.alarms.get_current_mode() != AT_ALL_COSTS
+            )
             camera_detection.start()
             vocal_command.start()
-            if self.alarms.get_current_mode() == QUE_SERA_SERA:
+            self.ringtone.play(loops=-1)
+            if self.alarms.get_current_mode() == AT_ALL_COSTS:
+                self.room.max_brightness()
+            elif self.alarms.get_current_mode() == QUE_SERA_SERA:
                 time.sleep(60)
                 self.ring_event.set()
             self.ring_event.wait()
-            self.silence()
+            self.ringtone.stop()
             camera_detection.join()
             vocal_command.join()
+            if vocal_command.command_is_snooze:
+                self.try_snooze()
+                print("snoozing")
+            self.silence()
         return
 
     def __schedule_next_alarm(self, snooze=0):
@@ -95,7 +105,6 @@ class SmartAlarm:
     def try_snooze(self, minutes="1"):
         snooze_mode = self.alarms.get_current_mode()
         if snooze_mode == AT_ALL_COSTS:
-            self.room.max_brightness()
             vc.speak_text("Snoozing is not allowed. You must wake up.")
             return False
         elif snooze_mode == NO_ALARM:
