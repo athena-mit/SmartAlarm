@@ -1,4 +1,6 @@
 import datetime
+import time
+
 from alarm_schedule import AlarmSchedule
 from event_calendar import EventCalendar
 from virtual_room import VirtualRoom
@@ -75,6 +77,9 @@ class SmartAlarm:
             self.ringtone.play(loops=-1)
             camera_detection.start()
             vocal_command.start()
+            if self.alarms.get_current_mode() == QUE_SERA_SERA:
+                time.sleep(60)
+                self.ring_event.set()
             self.ring_event.wait()
             self.silence()
             camera_detection.join()
@@ -96,6 +101,7 @@ class SmartAlarm:
     def try_snooze(self, minutes="1"):
         snooze_mode = self.alarms.get_current_mode()
         if snooze_mode == AT_ALL_COSTS:
+            self.room.max_brightness()
             vc.speak_text("Snoozing is not allowed. You must wake up.")
             return False
         elif snooze_mode == NO_ALARM:

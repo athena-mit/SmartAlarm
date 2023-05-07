@@ -9,3 +9,7 @@ class VirtualRoom:
         if self.__brightness < len(self.__LIGHTING_OPTIONS) - 1:
             self.__brightness += 1
         return self.__LIGHTING_OPTIONS[self.__brightness]
+
+    def max_brightness(self):
+        self.__brightness = len(self.__LIGHTING_OPTIONS) - 1
+        return self.__LIGHTING_OPTIONS[self.__brightness]
