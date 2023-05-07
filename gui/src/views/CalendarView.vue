@@ -130,13 +130,13 @@
             'warn_time': this.newEvent.warn_time
           }).then(() => {
               this.events = this.getCalendarSummary(this.firstDay);
-              // this.newEvent= {
-              //   name: "",
-              //   importance: "",
-              //   start_time: "",
-              //   end_time: "",
-              //   warn_time: "",
-              // }
+              this.newEvent= {
+                name: "",
+                importance: "",
+                start_time: "",
+                end_time: "",
+                warn_time: "",
+              }
               }
           );
         }

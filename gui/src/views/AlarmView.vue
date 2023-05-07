@@ -10,7 +10,15 @@
     <br><br>
     <div>
       <p> Add Alarm: </p>
-      <input type="time" v-model="newAlarm">
+      <input type="time" v-model="newAlarm.time"><br><br>
+      <input v-model="newAlarm.mode" type="radio" id="basic" value="basic">
+        <label for="basic">Basic</label><br>
+      <input v-model="newAlarm.mode" type="radio" id="qss" value="que_sera_sera">
+        <label for="qss">Que Sera Sera</label><br>
+      <input v-model="newAlarm.mode" type="radio" id="pa" value="passive_aggressive">
+        <label for="pa">Passive Aggressive</label><br>
+      <input v-model="newAlarm.mode" type="radio" id="aac" value="at_all_costs">
+        <label for="aac">At All Costs</label><br><br>
       <button class="button" v-on:click="createAlarm"> Create </button>
     </div>
     <br><br>
@@ -25,10 +33,13 @@
   export default {
     name: "alarmView",
       components: {AlarmList},
-    props: [],
+    props: ['roomSettings'],
     data(){
       return {
-        newAlarm: "",
+        newAlarm: {
+          time: "",
+          mode: ""
+        },
         dTimer: "",
         alarms: []
       };
@@ -38,7 +49,8 @@
         axios.post(path, {"action": "start"});
       },
       silenceAlarm: function () {
-        axios.post(path, {"action": "silence"});
+        axios.post(path, {"action": "silence"}
+        ).then(() => this.getAlarms());
       },
       snoozeAlarm: function () {
         axios.post(path,
@@ -46,13 +58,15 @@
         ).then(() => this.getAlarms());
       },
       createAlarm: function () {
-        if (this.newAlarm) {
+        if (this.newAlarm.time && this.newAlarm.mode) {
           axios.post(path, {
             "action": "create",
-            "time": this.newAlarm
+            "time": this.newAlarm.time,
+            "mode": this.newAlarm.mode
           }).then(() => {
-              this.getAlarms()
-              this.newAlarm = ""
+              this.getAlarms();
+              this.newAlarm.time = "";
+              this.newAlarm.mode = "";
               }
           );
         }
@@ -69,6 +83,7 @@
         axios.get(path)
         .then((res) => {
           this.alarms = res.data.alarms;
+          this.roomSettings.brightness = res.data.brightness;
         })
         .catch((error) => {
           console.error(error);

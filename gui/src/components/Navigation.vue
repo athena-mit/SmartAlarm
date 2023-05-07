@@ -4,6 +4,7 @@
     <div class="pageNav">
       <router-link class="page" to="/">Alarms</router-link>
       <router-link class="page" to="/calendar">Calendar</router-link>
+      <router-link class="page" to="/room">Room</router-link>
     </div>
 </div>
 </template>

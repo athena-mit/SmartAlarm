@@ -8,19 +8,20 @@ import calendar
 class EventCalendar:
     __records = {}
 
-    def add(self, date, name, importance, t_start, t_end, t_warn):
+    def add(self, name, importance, t_start, t_end, t_warn):
+        date_key = t_start.replace(hour=0, minute=0, second=0)
         event = {
             "id": uuid.uuid4().hex,
             'name': name,
             'importance': importance,
-            'start_time': t_start,
-            'end_time': t_end,
-            'warn_time': t_warn
+            'start_time': t_start.replace(second=0),
+            'end_time': t_end.replace(second=0),
+            'warn_time': t_warn.replace(second=0)
         }
-        if date in self.__records.keys():
-            self.__records[date].append(event)
+        if date_key in self.__records.keys():
+            self.__records[date_key].append(event)
         else:
-            self.__records[date] = [event]
+            self.__records[date_key] = [event]
         return
 
     def remove(self, date, event_id):
@@ -35,9 +36,10 @@ class EventCalendar:
         return self.__records.copy()
 
     def get_day(self, date):
-        if date not in self.__records.keys():
+        date_key = date.replace(hour=0, minute=0, second=0)
+        if date_key not in self.__records.keys():
             return False
-        return self.__records[date].copy()
+        return self.__records[date_key].copy()
 
     def get_calendar_summary(self, year, month):
         summary = []
@@ -49,41 +51,22 @@ class EventCalendar:
                 summary.append(0)
         return summary
 
-
-    def get_range(self, start_date: str, end_date: str) -> dict:
-        mini_calendar = []
-        current_key = convert_date_str_to_datettime(start_date)
-        end_key = convert_date_str_to_datettime(end_date)
-        while current_key <= end_key:
-            day_cal = {
-                'date': str(current_key.month) + "/" + str(current_key.day),
-                'weekday': current_key.isoweekday(),
-                'events': []
-            }
-            if current_key in self.__records.keys():
-                day_cal['events'] = self.__records[current_key].copy()
-            mini_calendar.append(day_cal)
-            current_key += datetime.timedelta(days=1)
-        return mini_calendar
-
     def get_soonest_event(self):
-        curr_date_key = datetime.datetime.now()
-        curr_time = (curr_date_key.hour, curr_date_key.minute)
+        current_time = datetime.datetime.now()
+        today = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
         soonest_event = None
-        soonest_time = None
-        if curr_date_key in self.__records.keys():
-            for e in self.__records[curr_date_key]:
-                event_time = convert_str_to_t_tup(e.start_time)
-                if is_after(event_time, curr_time) and \
-                        (not soonest_event or is_after(soonest_time, event_time)):
-                    soonest_time = event_time
+        if today in self.__records.keys():
+            for e in self.__records[today]:
+                print("e: " + str(e))
+                if e['warn_time'] > current_time and \
+                        (not soonest_event or soonest_event['warn_time'] > e['warn_time']):
                     soonest_event = e
         if not soonest_event:
-            next_date_key = curr_date_key + datetime.timedelta(days=1)
+            next_date_key = today + datetime.timedelta(days=1)
             if next_date_key in self.__records.keys():
-                event_time = convert_str_to_t_tup(e.start_time)
                 for e in self.__records[next_date_key]:
-                    if not soonest_event or is_after(soonest_time, event_time):
-                        soonest_time = event_time
+                    if not soonest_event or soonest_event['warn_time'] > e['warn_time']:
                         soonest_event = e
+            if not soonest_event:
+                return False
         return soonest_event.copy()

@@ -1,6 +1,9 @@
 import datetime
+import time
+
 from alarm_schedule import AlarmSchedule
 from event_calendar import EventCalendar
+from virtual_room import VirtualRoom
 from utilities import *
 import alertness_detection as ad
 import voice_commands as vc
@@ -11,6 +14,7 @@ from threading import Thread, Event
 class SmartAlarm:
     alarms = AlarmSchedule()
     events = EventCalendar()
+    room = VirtualRoom()
     mixer.init()
     ringtone = mixer.music
     ringtone.load('mixkit-sleepy-cat-135.mp3')
@@ -28,23 +32,21 @@ class SmartAlarm:
         date = datetime.datetime.fromisoformat(date)
         return self.events.get_calendar_summary(date.year, date.month)
 
-    def add_alarm(self, time_str, mode_str='basic'):
+    def get_room_brightness(self):
+        return self.room.get_brightness()
+
+    def add_alarm(self, time_str, mode='basic'):
         current_time = datetime.datetime.now()
-        print("time info:" + str(time_str.split(":")))
+        current_time = current_time.replace(second=0)
         time_info = time_str.split(":")
-        alarm_time = current_time.replace(hour=int(time_info[0]), minute=int(time_info[1]), second=0)
-        print("alarm time =" + str(alarm_time))
+        alarm_time = current_time.replace(hour=int(time_info[0]), minute=int(time_info[1]))
         if alarm_time < current_time:
             tomorrow = alarm_time + datetime.timedelta(hours=24)
-            print("tomorrow =" + str(tomorrow))
-            return self.alarms.add(tomorrow, MODES[mode_str])
-        return self.alarms.add(alarm_time, MODES[mode_str])
+            return self.alarms.add(tomorrow, mode)
+        return self.alarms.add(alarm_time, mode)
 
     def add_event(self, name, importance, s_time, e_time, w_time):
-        date = datetime.datetime.fromisoformat(s_time)
-        date = date.replace(hour=0, minute=0, second=0)
         return self.events.add(
-            date,
             name,
             importance,
             datetime.datetime.fromisoformat(s_time),
@@ -69,8 +71,11 @@ class SmartAlarm:
             self.ringtone.play(loops=-1)
             camera_detection.start()
             vocal_command.start()
+            if self.alarms.get_current_mode() == QUE_SERA_SERA:
+                time.sleep(60)
+                self.ring_event.set()
             self.ring_event.wait()
-            self.ringtone.stop()
+            self.silence()
             camera_detection.join()
             vocal_command.join()
         return
@@ -78,22 +83,26 @@ class SmartAlarm:
     def __schedule_next_alarm(self, snooze=0):
         snooze_mode = self.alarms.get_current_mode()
         snooze_time = datetime.datetime.now() + datetime.timedelta(minutes=snooze)
+        snooze_time = snooze_time.replace(second=0)
         soonest_event = self.events.get_soonest_event()
         if soonest_event and (not snooze or soonest_event['warn_time'] <= snooze_time):
-            return self.alarms.add(
-                soonest_event['warn_time'],
-                max(SEVERITY[soonest_event['importance']], snooze_mode)
-            )
+            alarm_mode = snooze_mode
+            if MODE_DEGREE[EVENT_MODE[soonest_event['importance']]] > MODE_DEGREE[snooze_mode]:
+                alarm_mode = EVENT_MODE[soonest_event['importance']]
+            return self.alarms.add(soonest_event['warn_time'], alarm_mode)
         return self.alarms.add(snooze_time, snooze_mode)
 
-    def try_snooze(self, minutes="5"):
+    def try_snooze(self, minutes="1"):
         snooze_mode = self.alarms.get_current_mode()
         if snooze_mode == AT_ALL_COSTS:
+            self.room.max_brightness()
             vc.speak_text("Snoozing is not allowed. You must wake up.")
             return False
         elif snooze_mode == NO_ALARM:
             vc.speak_text("No alarm is ringing. Cannot snooze.")
             return False
+        elif snooze_mode == PASSIVE_AGGRESSIVE:
+            self.room.increase_brightness()
         self.__schedule_next_alarm(int(minutes))
         self.silence()
         return True
