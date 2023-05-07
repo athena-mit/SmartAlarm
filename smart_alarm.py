@@ -38,21 +38,15 @@ class SmartAlarm:
     def add_alarm(self, time_str, mode='basic'):
         current_time = datetime.datetime.now()
         current_time = current_time.replace(second=0)
-        print("time info:" + str(time_str.split(":")))
         time_info = time_str.split(":")
         alarm_time = current_time.replace(hour=int(time_info[0]), minute=int(time_info[1]))
-        print("alarm time =" + str(alarm_time))
         if alarm_time < current_time:
             tomorrow = alarm_time + datetime.timedelta(hours=24)
-            print("tomorrow =" + str(tomorrow))
             return self.alarms.add(tomorrow, mode)
         return self.alarms.add(alarm_time, mode)
 
     def add_event(self, name, importance, s_time, e_time, w_time):
-        date = datetime.datetime.fromisoformat(s_time)
-        date = date.replace(hour=0, minute=0, second=0)
         return self.events.add(
-            date,
             name,
             importance,
             datetime.datetime.fromisoformat(s_time),
@@ -93,8 +87,8 @@ class SmartAlarm:
         soonest_event = self.events.get_soonest_event()
         if soonest_event and (not snooze or soonest_event['warn_time'] <= snooze_time):
             alarm_mode = snooze_mode
-            if MODE_DEGREE[EVENT_MODE[soonest_event['importance']]] > snooze_mode:
-                alarm_mode = MODE_DEGREE[EVENT_MODE[soonest_event['importance']]]
+            if MODE_DEGREE[EVENT_MODE[soonest_event['importance']]] > MODE_DEGREE[snooze_mode]:
+                alarm_mode = EVENT_MODE[soonest_event['importance']]
             return self.alarms.add(soonest_event['warn_time'], alarm_mode)
         return self.alarms.add(snooze_time, snooze_mode)
 

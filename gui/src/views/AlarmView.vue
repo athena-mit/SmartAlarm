@@ -49,7 +49,8 @@
         axios.post(path, {"action": "start"});
       },
       silenceAlarm: function () {
-        axios.post(path, {"action": "silence"});
+        axios.post(path, {"action": "silence"}
+        ).then(() => this.getAlarms());
       },
       snoozeAlarm: function () {
         axios.post(path,

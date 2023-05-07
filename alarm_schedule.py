@@ -8,12 +8,13 @@ class AlarmSchedule:
     __severest_ringing_alarm = NO_ALARM
 
     def add(self, t: datetime.datetime, mode):
+        alarm_time = t.replace(second=0)
         for a in self.__records:
-            if a['status'] == ACTIVE and a['time'] == t:
+            if a['status'] == ACTIVE and a['time'] == alarm_time:
                 return False
         self.__records.append({
             'id': uuid.uuid4().hex,
-            'time': t,
+            'time': alarm_time,
             'status': ACTIVE,
             'mode': mode
         })
@@ -48,10 +49,8 @@ class AlarmSchedule:
                 if MODE_DEGREE[a['mode']] > MODE_DEGREE[alarm_mode]:
                     alarm_mode = a['mode']
         if MODE_DEGREE[alarm_mode] > MODE_DEGREE[self.__severest_ringing_alarm]:
-            if self.__severest_ringing_alarm != NO_ALARM:
-                # another alarm is already ringing
+            if self.__severest_ringing_alarm == NO_ALARM:
                 self.__severest_ringing_alarm = alarm_mode
-                return False
+                return True
             self.__severest_ringing_alarm = alarm_mode
-            return True
         return False
