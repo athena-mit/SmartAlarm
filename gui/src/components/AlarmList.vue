@@ -1,8 +1,9 @@
 <template>
   <div class="alarmList">
     <div class="alarm" v-for="a in alarms" v-bind:style="{backgroundColor: getModeColor(a.mode)}">
-        <span> {{ formatTime(a.time) }} </span>
-      <span class="close" v-on:click="deleteAlarm(a.id)">x</span>
+        <span v-if="a.status !='disabled'">{{ formatTime(a.time) }}</span>
+        <del v-else>{{ formatTime(a.time) }}</del>
+        <span class="close" v-on:click="deleteAlarm(a.id)">x</span>
     </div>
   </div>
 </template>

@@ -76,7 +76,7 @@ class SmartAlarm:
             camera_detection.start()
             vocal_command.start()
             self.ring_event.wait()
-            self.ringtone.stop()
+            self.silence()
             camera_detection.join()
             vocal_command.join()
         return
