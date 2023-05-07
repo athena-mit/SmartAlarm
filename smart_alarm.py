@@ -33,7 +33,7 @@ class SmartAlarm:
     def get_room_brightness(self):
         return self.room.get_brightness()
 
-    def add_alarm(self, time_str, mode_str='passive_aggressive'):
+    def add_alarm(self, time_str, mode='basic'):
         current_time = datetime.datetime.now()
         current_time = current_time.replace(second=0)
         print("time info:" + str(time_str.split(":")))
@@ -43,8 +43,8 @@ class SmartAlarm:
         if alarm_time < current_time:
             tomorrow = alarm_time + datetime.timedelta(hours=24)
             print("tomorrow =" + str(tomorrow))
-            return self.alarms.add(tomorrow, MODES[mode_str])
-        return self.alarms.add(alarm_time, MODES[mode_str])
+            return self.alarms.add(tomorrow, mode)
+        return self.alarms.add(alarm_time, mode)
 
     def add_event(self, name, importance, s_time, e_time, w_time):
         date = datetime.datetime.fromisoformat(s_time)
@@ -86,10 +86,10 @@ class SmartAlarm:
         snooze_time = datetime.datetime.now() + datetime.timedelta(minutes=snooze)
         soonest_event = self.events.get_soonest_event()
         if soonest_event and (not snooze or soonest_event['warn_time'] <= snooze_time):
-            return self.alarms.add(
-                soonest_event['warn_time'],
-                max(SEVERITY[soonest_event['importance']], snooze_mode)
-            )
+            alarm_mode = snooze_mode
+            if MODE_DEGREE[EVENT_MODE[soonest_event['importance']]] > snooze_mode:
+                alarm_mode = MODE_DEGREE[EVENT_MODE[soonest_event['importance']]]
+            return self.alarms.add(soonest_event['warn_time'], alarm_mode)
         return self.alarms.add(snooze_time, snooze_mode)
 
     def try_snooze(self, minutes="5"):

@@ -7,7 +7,7 @@ class AlarmSchedule:
     __records = []
     __severest_ringing_alarm = NO_ALARM
 
-    def add(self, t: datetime.datetime, mode: int):
+    def add(self, t: datetime.datetime, mode):
         for a in self.__records:
             if a['status'] == ACTIVE and a['time'] == t:
                 return False
@@ -45,9 +45,9 @@ class AlarmSchedule:
         for a in self.__records:
             if a['status'] == ACTIVE and a['time'] <= t:
                 a['status'] = RINGING
-                if a['mode'] > alarm_mode:
+                if MODE_DEGREE[a['mode']] > MODE_DEGREE[alarm_mode]:
                     alarm_mode = a['mode']
-        if alarm_mode > self.__severest_ringing_alarm:
+        if MODE_DEGREE[alarm_mode] > MODE_DEGREE[self.__severest_ringing_alarm]:
             if self.__severest_ringing_alarm != NO_ALARM:
                 # another alarm is already ringing
                 self.__severest_ringing_alarm = alarm_mode

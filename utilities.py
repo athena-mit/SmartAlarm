@@ -5,15 +5,19 @@ ACTIVE = 'active'
 RINGING = 'ringing'
 DISABLED = 'disabled'
 # Alarm modes, used here instead of Enum for ease of autocomplete
-NO_ALARM = -1
-QUE_SERA_SERA = 0
-BASIC = 1
-PASSIVE_AGGRESSIVE = 2
-AT_ALL_COSTS = 3
-MODES = {'que_sera_sera': QUE_SERA_SERA, 'basic': BASIC,
-         'passive_aggressive': PASSIVE_AGGRESSIVE, 'at_all_costs': AT_ALL_COSTS}
+NO_ALARM = 'no_alarm'
+QUE_SERA_SERA = 'que_sera_sera'
+BASIC = 'basic'
+PASSIVE_AGGRESSIVE = 'passive_aggressive'
+AT_ALL_COSTS = 'at_all_costs'
+MODE_DEGREE = {
+    NO_ALARM: 0,
+    QUE_SERA_SERA: 1,
+    BASIC: 2,
+    AT_ALL_COSTS: 3
+}
 # Event importance to alarm mode mapping
-SEVERITY = {'high': AT_ALL_COSTS, 'medium': PASSIVE_AGGRESSIVE, 'low': BASIC, 'zero': QUE_SERA_SERA}
+EVENT_MODE = {'high': AT_ALL_COSTS, 'medium': PASSIVE_AGGRESSIVE, 'low': BASIC, 'zero': QUE_SERA_SERA}
 
 
 def convert_date_str_to_datettime(date):

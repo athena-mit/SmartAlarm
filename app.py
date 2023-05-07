@@ -30,7 +30,7 @@ def play_alarm():
         elif post_data.get("action") == "snooze":
             MANAGER.try_snooze()
         elif post_data.get("action") == "create":
-            MANAGER.add_alarm(post_data.get("time"))
+            MANAGER.add_alarm(post_data.get("time"), post_data.get("mode"))
         response_object["action"] = post_data.get("action")
     return jsonify(response_object)
 

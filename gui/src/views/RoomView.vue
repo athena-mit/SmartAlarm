@@ -1,7 +1,6 @@
 <template>
   <div v-bind:style="{backgroundColor:roomSettings.brightness}">
     <img src="../assets/bed.png">
-    <button v-on:click="toggleLighting">toggle</button>
   </div>
 </template>
 
