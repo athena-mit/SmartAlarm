@@ -14,7 +14,8 @@ MODE_DEGREE = {
     NO_ALARM: 0,
     QUE_SERA_SERA: 1,
     BASIC: 2,
-    AT_ALL_COSTS: 3
+    PASSIVE_AGGRESSIVE: 3,
+    AT_ALL_COSTS: 4
 }
 # Event importance to alarm mode mapping
 EVENT_MODE = {'high': AT_ALL_COSTS, 'medium': PASSIVE_AGGRESSIVE, 'low': BASIC, 'zero': QUE_SERA_SERA}

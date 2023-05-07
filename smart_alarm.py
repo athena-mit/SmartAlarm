@@ -84,6 +84,7 @@ class SmartAlarm:
     def __schedule_next_alarm(self, snooze=0):
         snooze_mode = self.alarms.get_current_mode()
         snooze_time = datetime.datetime.now() + datetime.timedelta(minutes=snooze)
+        snooze_time = snooze_time.replace(second=0)
         soonest_event = self.events.get_soonest_event()
         if soonest_event and (not snooze or soonest_event['warn_time'] <= snooze_time):
             alarm_mode = snooze_mode
@@ -92,7 +93,7 @@ class SmartAlarm:
             return self.alarms.add(soonest_event['warn_time'], alarm_mode)
         return self.alarms.add(snooze_time, snooze_mode)
 
-    def try_snooze(self, minutes="5"):
+    def try_snooze(self, minutes="1"):
         snooze_mode = self.alarms.get_current_mode()
         if snooze_mode == AT_ALL_COSTS:
             vc.speak_text("Snoozing is not allowed. You must wake up.")
