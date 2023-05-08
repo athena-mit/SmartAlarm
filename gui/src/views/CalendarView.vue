@@ -28,7 +28,7 @@
       <input type="datetime-local" v-model="newEvent.start_time">
       <p>end at: </p>
       <input type="datetime-local" v-model="newEvent.end_time">
-      <p>wake me up by: </p>
+      <p>wake me up at: </p>
       <input type="datetime-local" v-model="newEvent.warn_time">
       <br><br>
       <button class="button" v-on:click="createEvent"> Create </button>

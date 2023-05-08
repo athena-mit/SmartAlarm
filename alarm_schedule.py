@@ -8,7 +8,7 @@ class AlarmSchedule:
     __severest_ringing_alarm = NO_ALARM
 
     def add(self, t: datetime.datetime, mode):
-        alarm_time = t.replace(second=0)
+        alarm_time = t.replace(second=0, microsecond=0)
         for a in self.__records:
             if a['status'] == ACTIVE and a['time'] == alarm_time:
                 return False
@@ -39,6 +39,12 @@ class AlarmSchedule:
                 a['status'] = DISABLED
         self.__severest_ringing_alarm = NO_ALARM
         return
+
+    def snooze(self, minutes=1):
+        alarm_mode = self.__severest_ringing_alarm
+        alarm_time = datetime.datetime.now() + datetime.timedelta(minutes=minutes)
+        self.silence()
+        return self.add(alarm_time, alarm_mode)
 
     def is_time_to_trigger(self):
         t = datetime.datetime.now()

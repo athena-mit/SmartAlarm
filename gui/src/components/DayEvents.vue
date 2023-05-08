@@ -24,7 +24,7 @@
         let tInterval = tStart.toLocaleTimeString([], {timeStyle: 'short'}) +
             " - " + tEnd.toLocaleTimeString([], {timeStyle: 'short'});
         let tWarn = new Date(e.warn_time + "-400")
-        return tInterval + " (wake up by " +
+        return tInterval + " (wake up at " +
             tWarn.toLocaleTimeString([], {timeStyle: 'short'}) + ")";
       },
       getEventColor: function(importance) {
