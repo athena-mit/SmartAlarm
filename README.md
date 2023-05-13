@@ -77,7 +77,10 @@ and vocal commands.
 #### Alertness Detection
 The following files and folders are used in order to detect the 
 user's face and determine if they are "alert enough" to silence 
-the alarm:
+the alarm. All the files/folders below were written by and downloaded
+from [DataFlair](https://data-flair.training/blogs/python-project-driver-drowsiness-detection-system/) 
+except for `alertness_detection.py`, which is a slight modification of the original
+`drowsiness detection.py` that DataFlair provides; everything else was left unchanged.
 * [haar cascade files](/haar%20cascade%20files)
 * [models](/models)
 * [model.py](/model.py)

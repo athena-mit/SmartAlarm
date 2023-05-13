@@ -1,3 +1,5 @@
+# Adapted from: https://data-flair.training/blogs/python-project-driver-drowsiness-detection-system/
+
 import cv2
 import os
 from keras.models import load_model
