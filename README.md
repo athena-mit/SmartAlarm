@@ -15,7 +15,7 @@ events, which will then schedule an alarm to wake them up at the specified time.
 
 
 ## Run
-This project was written in Python 3.10.11 and Node v18.16.0, 
+This project was written in Python 3.10.11 and Node v18.16.0 (npm v9.5.1), 
 both will need to be installed in order to run the project. I
 ran this on Windows 11, but it should work fine for Windows
 10 as well. 
@@ -42,7 +42,7 @@ The frontend portion of the app is contained in the
 part of the backend.
 
 *Notes About the Frontend:*
-* written using Vue Framework (Node version v18.16.0)
+* written using Vue Framework (Node v18.16.0, npm v9.5.1)
 * All the non-automatically generated files are in the 
 [gui/src directory](/gui/src). 
 * For those unfamiliar with Vue, the [src/views](/gui/src/views) directory 
