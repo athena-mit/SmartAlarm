@@ -70,6 +70,7 @@ class SmartAlarm:
     def try_ring(self):
         if self.alarms.is_time_to_trigger():
             self.ring_event.clear()
+            event_timeout = None
             camera_detection = Thread(target=ad.trigger_alarm, args=(self.ring_event,))
             vocal_command = vc.VoiceCommands(
                 self.ring_event,
@@ -81,10 +82,12 @@ class SmartAlarm:
             if self.alarms.get_current_mode() == AT_ALL_COSTS:
                 self.room.max_brightness()
             elif self.alarms.get_current_mode() == QUE_SERA_SERA:
-                time.sleep(60)
+                event_timeout = 60
+            self.ring_event.wait(timeout=event_timeout)
+            if not self.ring_event.is_set():
                 self.ring_event.set()
-            self.ring_event.wait()
             self.ringtone.stop()
+            camera_detection.join()
             vocal_command.join()
             if vocal_command.command_is_snooze:
                 self.try_snooze()

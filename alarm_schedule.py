@@ -11,6 +11,9 @@ class AlarmSchedule:
         alarm_time = t.replace(second=0, microsecond=0)
         for a in self.__records:
             if a['status'] == ACTIVE and a['time'] == alarm_time:
+                if MODE_DEGREE[a['mode']] < MODE_DEGREE[mode]:
+                    a['mode'] = mode
+                    return True
                 return False
         self.__records.append({
             'id': uuid.uuid4().hex,
