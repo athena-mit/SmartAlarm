@@ -1,3 +1,5 @@
+# Adapted from: https://www.geeksforgeeks.org/python-convert-speech-to-text-and-text-to-speech/
+
 import speech_recognition as sr
 import pyttsx3
 from threading import Thread
