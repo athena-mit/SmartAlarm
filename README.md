@@ -99,7 +99,8 @@ except for `alertness_detection.py`, which is a slight modification of the origi
   until the user has snoozed/silenced the alarm through one of the other modalities.
 #### Vocal Interaction
 [voice_commands.py](/voice_commands.py) allows the system to listen
-for voice commands and issue vocal confirmation to the user.
+for voice commands and issue vocal confirmation to the user. File adapted
+from example code by [GeeksForGeeks](https://www.geeksforgeeks.org/python-convert-speech-to-text-and-text-to-speech/).
 
 ### Events
 
