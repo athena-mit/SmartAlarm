@@ -1,3 +1,5 @@
+# Copied from: https://data-flair.training/blogs/python-project-driver-drowsiness-detection-system/
+
 import os
 from keras.preprocessing import image
 import matplotlib.pyplot as plt 
