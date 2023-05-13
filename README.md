@@ -81,10 +81,22 @@ the alarm. All the files/folders below were written by and downloaded
 from [DataFlair](https://data-flair.training/blogs/python-project-driver-drowsiness-detection-system/) 
 except for `alertness_detection.py`, which is a slight modification of the original
 `drowsiness detection.py` that DataFlair provides; everything else was left unchanged.
-* [haar cascade files](/haar%20cascade%20files)
-* [models](/models)
+* [haar cascade files/](/haar%20cascade%20files)
+  * Contains three separate files which the system uses to identify
+  faces in the camera feed and determine where its left and right eyes
+  are.
+* [models/](/models)
+  * Contains the CNN model `cnnCat2.h5`, which determines if eyes are
+  "Open" or "Closed"
 * [model.py](/model.py)
+  * Used to build the model in the `models/` directory. Not
+  actually run at any point by the system, but left here for better
+  understanding of how the model was created.
 * [alertness_detection.py](/alertness_detection.py)
+  * Initializes the camera feed and then combines the haar cascade files 
+  and the CNN model to find the user's eyes, if present, and keep the camera
+  running until the eyes have stayed open for the specified amount of time or
+  until the user has snoozed/silenced the alarm through one of the other modalities.
 #### Vocal Interaction
 [voice_commands.py](/voice_commands.py) allows the system to listen
 for voice commands and issue vocal confirmation to the user.
