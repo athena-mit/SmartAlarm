@@ -53,7 +53,7 @@ the name implies, contains smaller components used by the files in [src/views](/
 
 *Notes About the Backend:*
 * written entirely in Python 3.10 (all external packages can
-be viewd in [requirements.txt](/requirements.txt)).
+be viewed in [requirements.txt](/requirements.txt)).
 * [app.py](/app.py) handles routing and requests from the
 frontend. All of its computation is handled by [smart_alarm.py](/smart_alarm.py)
 * [smart_alarm.py](/smart_alarm.py) contains the `SmartAlarm` class, which
