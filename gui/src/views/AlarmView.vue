@@ -12,13 +12,13 @@
       <p> Add Alarm: </p>
       <input type="time" v-model="newAlarm.time"><br><br>
       <input v-model="newAlarm.mode" type="radio" id="basic" value="basic">
-        <label for="basic">Basic</label><br>
+        <label for="basic" style="background-color: #80c3ff">Basic</label><br>
       <input v-model="newAlarm.mode" type="radio" id="qss" value="que_sera_sera">
-        <label for="qss">Que Sera Sera</label><br>
+        <label for="qss" style="background-color: #cce7ff">Que Sera Sera</label><br>
       <input v-model="newAlarm.mode" type="radio" id="pa" value="passive_aggressive">
-        <label for="pa">Passive Aggressive</label><br>
+        <label for="pa" style="background-color: #ffd700">Passive Aggressive</label><br>
       <input v-model="newAlarm.mode" type="radio" id="aac" value="at_all_costs">
-        <label for="aac">At All Costs</label><br><br>
+        <label for="aac" style="background-color: #ff4d4d">At All Costs</label><br><br>
       <button class="button" v-on:click="createAlarm"> Create </button>
     </div>
     <br><br>
@@ -33,7 +33,6 @@
   export default {
     name: "alarmView",
       components: {AlarmList},
-    props: ['roomSettings'],
     data(){
       return {
         newAlarm: {
@@ -83,7 +82,6 @@
         axios.get(path)
         .then((res) => {
           this.alarms = res.data.alarms;
-          this.roomSettings.brightness = res.data.brightness;
         })
         .catch((error) => {
           console.error(error);

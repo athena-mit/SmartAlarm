@@ -2,8 +2,8 @@
   <div class="dayWindow">
     <div class="dayContent">
        <ul>
-         <li v-for="e in events">
-           {{formatEvent(e)}}
+         <li v-for="e in events" v-bind:style="{backgroundColor: getEventColor(e.importance)}">
+             {{e.name}}: <i>{{formatEvent(e)}}</i>
          </li>
        </ul>
        <p v-if="!events">Nothing Scheduled Yet!</p>
@@ -21,10 +21,21 @@
       formatEvent: function(e){
         let tStart = new Date(e.start_time + "-400");
         let tEnd = new Date(e.end_time + "-400");
-        let tInterval = tStart.toLocaleTimeString() + " - " + tEnd.toLocaleTimeString();
+        let tInterval = tStart.toLocaleTimeString([], {timeStyle: 'short'}) +
+            " - " + tEnd.toLocaleTimeString([], {timeStyle: 'short'});
         let tWarn = new Date(e.warn_time + "-400")
-        return tInterval + ": " + e.name + " (" + e.importance + ") - wake up by: " + tWarn.toLocaleTimeString();
-      }
+        return tInterval + " (wake up at " +
+            tWarn.toLocaleTimeString([], {timeStyle: 'short'}) + ")";
+      },
+      getEventColor: function(importance) {
+        if (importance == 'low'){
+          return '#80c3ff';
+        } else if (importance == 'medium'){
+          return '#ffd700';
+        } else if (importance == 'high'){
+          return '#ff4d4d';
+        } return '#d3d3d3';
+      },
     }
   }
 </script>

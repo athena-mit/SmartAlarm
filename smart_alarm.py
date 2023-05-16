@@ -46,6 +46,10 @@ class SmartAlarm:
         return self.alarms.add(alarm_time, mode)
 
     def add_event(self, name, importance, s_time, e_time, w_time):
+        self.alarms.add(
+            datetime.datetime.fromisoformat(w_time),
+            EVENT_MODE[importance]
+        )
         return self.events.add(
             name,
             importance,
@@ -66,36 +70,34 @@ class SmartAlarm:
     def try_ring(self):
         if self.alarms.is_time_to_trigger():
             self.ring_event.clear()
+            event_timeout = None
             camera_detection = Thread(target=ad.trigger_alarm, args=(self.ring_event,))
-            vocal_command = Thread(target=vc.get_voice_command, args=(self.ring_event,))
-            self.ringtone.play(loops=-1)
+            vocal_command = vc.VoiceCommands(
+                self.ring_event,
+                self.alarms.get_current_mode() != AT_ALL_COSTS
+            )
             camera_detection.start()
             vocal_command.start()
-            if self.alarms.get_current_mode() == QUE_SERA_SERA:
-                time.sleep(60)
+            self.ringtone.play(loops=-1)
+            if self.alarms.get_current_mode() == AT_ALL_COSTS:
+                self.room.max_brightness()
+            elif self.alarms.get_current_mode() == QUE_SERA_SERA:
+                event_timeout = 60
+            self.ring_event.wait(timeout=event_timeout)
+            if not self.ring_event.is_set():
                 self.ring_event.set()
-            self.ring_event.wait()
-            self.silence()
+            self.ringtone.stop()
             camera_detection.join()
             vocal_command.join()
+            if vocal_command.command_is_snooze:
+                self.try_snooze()
+            else:
+                self.alarms.silence()
         return
-
-    def __schedule_next_alarm(self, snooze=0):
-        snooze_mode = self.alarms.get_current_mode()
-        snooze_time = datetime.datetime.now() + datetime.timedelta(minutes=snooze)
-        snooze_time = snooze_time.replace(second=0)
-        soonest_event = self.events.get_soonest_event()
-        if soonest_event and (not snooze or soonest_event['warn_time'] <= snooze_time):
-            alarm_mode = snooze_mode
-            if MODE_DEGREE[EVENT_MODE[soonest_event['importance']]] > MODE_DEGREE[snooze_mode]:
-                alarm_mode = EVENT_MODE[soonest_event['importance']]
-            return self.alarms.add(soonest_event['warn_time'], alarm_mode)
-        return self.alarms.add(snooze_time, snooze_mode)
 
     def try_snooze(self, minutes="1"):
         snooze_mode = self.alarms.get_current_mode()
         if snooze_mode == AT_ALL_COSTS:
-            self.room.max_brightness()
             vc.speak_text("Snoozing is not allowed. You must wake up.")
             return False
         elif snooze_mode == NO_ALARM:
@@ -103,6 +105,9 @@ class SmartAlarm:
             return False
         elif snooze_mode == PASSIVE_AGGRESSIVE:
             self.room.increase_brightness()
-        self.__schedule_next_alarm(int(minutes))
+        self.alarms.snooze(int(minutes))
         self.silence()
         return True
+
+    def reset_room(self):
+        return self.room.turn_off_lights()

@@ -15,8 +15,8 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 MANAGER = SmartAlarm()
 
 
-@app.route('/alarm', methods=['GET', 'DELETE', 'POST'])
-def play_alarm():
+@app.route('/alarm', methods=['GET', 'POST'])
+def handle_alarm():
     response_object = {'status': 'success'}
     if request.method == "GET":
         response_object["alarms"] = MANAGER.get_alarms()
@@ -36,11 +36,9 @@ def play_alarm():
 
 
 @app.route('/alarm/<alarm_id>', methods=['DELETE'])
-def single_alarm(alarm_id):
-    response_object = {'status': 'success'}
-    if request.method == "DELETE":
-        MANAGER.delete_alarm(alarm_id)
-    return jsonify(response_object)
+def delete_alarm(alarm_id):
+    MANAGER.delete_alarm(alarm_id)
+    return jsonify({'status': 'success'})
 
 
 @app.route('/event/<date>', methods=['GET'])
@@ -70,9 +68,14 @@ def handle_events():
     return jsonify(response_object)
 
 
-@app.route('/room', methods=['GET'])
+@app.route('/room', methods=['GET', 'POST'])
 def handle_room():
-    return jsonify({'status': 'success', "brightness": MANAGER.get_room_brightness()})
+    response_object = {'status': 'success'}
+    if request.method == 'GET':
+        response_object["brightness"] = MANAGER.get_room_brightness()
+    elif request.method == 'POST':
+        response_object["brightness"] = MANAGER.reset_room()
+    return response_object
 
 
 if __name__ == '__main__':

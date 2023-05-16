@@ -22,7 +22,7 @@
         } else if (mode == 'passive_aggressive'){
           return '#ffd700';
         } else if (mode == 'at_all_costs'){
-          return '#e60000';
+          return '#ff4d4d';
         } return '#d3d3d3';
       },
       formatTime: function(time_string){

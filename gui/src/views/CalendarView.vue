@@ -17,18 +17,18 @@
       <input type="text" v-model="newEvent.name">
       <div>
         <p>Importance: </p>
-        <input v-model="newEvent.importance" type="radio" id="high" value="high">
-          <label for="html">High</label><br>
-        <input v-model="newEvent.importance" type="radio" id="med" value="medium">
-          <label for="html">Medium</label><br>
         <input v-model="newEvent.importance" type="radio" id="low" value="low">
-          <label for="html">Low</label><br>
+          <label for="low" style="background-color: #80c3ff">Low</label><br>
+        <input v-model="newEvent.importance" type="radio" id="med" value="medium">
+          <label for="med" style="background-color: #ffd700">Medium</label><br>
+        <input v-model="newEvent.importance" type="radio" id="high" value="high">
+          <label for="high" style="background-color: #ff4d4d">High</label><br>
       </div>
       <p>start at: </p>
       <input type="datetime-local" v-model="newEvent.start_time">
       <p>end at: </p>
       <input type="datetime-local" v-model="newEvent.end_time">
-      <p>wake me up by: </p>
+      <p>wake me up at: </p>
       <input type="datetime-local" v-model="newEvent.warn_time">
       <br><br>
       <button class="button" v-on:click="createEvent"> Create </button>
@@ -55,7 +55,7 @@
         showPopUp: false,
         newEvent: {
             name: "",
-            importance: "low",
+            importance: "",
             start_time: "",
             end_time: "",
             warn_time: "",
@@ -159,7 +159,7 @@
   flex-grow: 1;
 }
 .daySchedule, .outsideMonth {
-  background-color: lightgray;
+  background-color: #a4efa4;
   flex-grow: 1;
   width: 100px;
   height: 100px;
@@ -167,7 +167,7 @@
 }
 
 .outsideMonth {
-  background-color: #e7e7e7;
+  background-color: #cefdce;
 }
 
 .addEvent {

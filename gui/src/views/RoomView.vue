@@ -1,25 +1,42 @@
 <template>
-  <div v-bind:style="{backgroundColor:roomSettings.brightness}">
-    <img src="../assets/bed.png">
+  <div v-bind:style="{backgroundColor:brightness}">
+    <img src="../assets/bed.png" alt="">
+    <button v-on:click="resetSettings">Reset</button>
   </div>
 </template>
 
 <script>
+  import axios from "axios";
+  const path = 'http://localhost:5001/room';
   export default {
     name: "roomView",
-    props: ['roomSettings'],
     data() {
       return {
-        lighting: [
-          '#000000', '#4d4d00', '#999900', '#e6e600', '#ffff33'
-        ],
-        lightSetting: 0
+        brightness: "#000000"
       };
     },
     methods: {
-      toggleLighting: function () {
-        this.lightSetting = (this.lightSetting + 1) % this.lighting.length
+      getSettings: function () {
+        axios.get(path)
+        .then((res) => {
+          this.brightness = res.data.brightness;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      },
+      resetSettings: function () {
+        axios.post(path)
+          .then((res) => {
+            this.brightness = res.data.brightness;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
+    },
+    created: function (){
+      this.getSettings()
     }
   }
 </script>

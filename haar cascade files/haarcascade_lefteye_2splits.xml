@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <!--
+
+Copied from: https://data-flair.training/blogs/python-project-driver-drowsiness-detection-system/
+
+
     Tree-based 20x20 left eye detector.
     The detector is trained by 6665 positive samples from FERET, VALID and BioID face databases. 
     Created by Shiqi Yu (http://yushiqi.cn/research/eyedetection).

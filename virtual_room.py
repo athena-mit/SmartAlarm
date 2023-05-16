@@ -5,6 +5,10 @@ class VirtualRoom:
     def get_brightness(self):
         return self.__LIGHTING_OPTIONS[self.__brightness]
 
+    def turn_off_lights(self):
+        self.__brightness = 0
+        return self.__LIGHTING_OPTIONS[self.__brightness]
+
     def increase_brightness(self):
         if self.__brightness < len(self.__LIGHTING_OPTIONS) - 1:
             self.__brightness += 1
